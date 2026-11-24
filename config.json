@@ -1,0 +1,21 @@
+{
+  "host": "127.0.0.1",
+  "port": 8156,
+  "cache_ttl": 900,
+  "max_entries": 30,
+  "images_for_latest": 30,
+  "mangas": [
+    {
+      "id": "rSmmf",
+      "title": "Naruto"
+    },
+    {
+      "id": "bhCsf",
+      "title": "Three Days of Happiness (manga)"
+    },
+    {
+      "id": "XcBc",
+      "title": "Three Days of Happiness (novel)"
+    }
+  ]
+}
