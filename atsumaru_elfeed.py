@@ -257,12 +257,22 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main(argv):
-    if len(argv) >= 2 and argv[1] == "search":
-        for h in api_search(" ".join(argv[2:])).get("hits", []):
+    args = [a for a in argv[1:] if a.startswith("--")]
+    rest = [a for a in argv[1:] if not a.startswith("--")]
+    opts = {}
+    for a in args:
+        if "=" in a:
+            k, v = a[2:].split("=", 1)
+            opts[k] = v
+    global CONFIG_PATH
+    if "config" in opts:
+        CONFIG_PATH = opts["config"]
+    if rest and rest[0] == "search":
+        for h in api_search(" ".join(rest[1:])).get("hits", []):
             print(h["document"]["id"], "-", h["document"]["title"])
         return
-    if len(argv) >= 3 and argv[1] == "dump":
-        mid = argv[2]
+    if len(rest) >= 2 and rest[0] == "dump":
+        mid = rest[1]
         cfg = load_config()
         manga = api_manga(mid, cfg.get("cache_ttl", 900))
         ch = api_chapters(mid, cfg.get("cache_ttl", 900)).get("chapters", [])
@@ -271,7 +281,9 @@ def main(argv):
                                             f"http://{cfg.get('host', '127.0.0.1')}:{cfg.get('port', 8156)}"))
         return
     cfg = load_config()
-    srv = ThreadingHTTPServer((cfg.get("host", "127.0.0.1"), cfg.get("port", 8156)), Handler)
+    host = opts.get("host", cfg.get("host", "127.0.0.1"))
+    port = int(opts.get("port", cfg.get("port", 8156)))
+    srv = ThreadingHTTPServer((host, port), Handler)
     print(f"serving on http://{srv.server_address[0]}:{srv.server_address[1]}  (Ctrl-C to stop)")
     srv.serve_forever()
 

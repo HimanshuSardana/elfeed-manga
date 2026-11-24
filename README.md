@@ -22,6 +22,8 @@ upload wins), like the extension's dedupe option.
 python3 atsumaru_elfeed.py            # serve on 127.0.0.1:8156
 python3 atsumaru_elfeed.py search solo leveling   # find a manga id
 python3 atsumaru_elfeed.py dump OlBhf > feed.xml  # one-shot static file
+
+Flags override config without editing it:
 ```
 
 Add your series to `config.json`:
@@ -34,7 +36,13 @@ Feed URL per series: `http://127.0.0.1:8156/feed?id=OlBhf&max=30`
 (`max` optional, defaults to `max_entries`). The newest `images_for_latest`
 entries (default 30, `?images=N` overrides, `?images=0` disables) embed the
 full page images from `cdn.atsu.moe` inline, so elfeed renders the chapter
-when you open the entry. Page images are proxied through the server (`/img?u=...`) and converted
+when you open the entry. Flags override config without editing it:
+
+```sh
+python3 atsumaru_elfeed.py --host=127.0.0.1 --port=8157 --config=/path/to/config.json
+```
+
+Page images are proxied through the server (`/img?u=...`) and converted
 to JPEG with ImageMagick (`magick`, required) — Emacs 31 can't decode
 avif, and this also avoids any hotlink weirdness. Converted pages are
 cached forever in `.state/img/`; manga/chapter lists respect `cache_ttl`.
